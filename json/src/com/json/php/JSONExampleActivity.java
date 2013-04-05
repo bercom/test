@@ -23,7 +23,7 @@ public class JSONExampleActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost("http://192.168.1.5/bclipse/json/php/index.php");
+        HttpPost httppost = new HttpPost("http://192.168.1.5/bclipse/php/index.php");
         TextView textView = (TextView)findViewById(R.id.textView1);
 		try {
 			
@@ -31,9 +31,10 @@ public class JSONExampleActivity extends Activity {
 			String jsonResult = inputStreamToString(response.getEntity().getContent()).toString();
 			JSONObject object = new JSONObject(jsonResult);
 
-			String name = object.getString("name");
+            String name = object.getString("name");
+            String comment = object.getString("comment");
 	    	String verion = object.getString("version");
-	    	textView.setText(name + " - " + verion);
+	    	textView.setText(name + " - " + comment + " - " + verion);
 	    	
 		} 
 		catch (JSONException e) {
