@@ -6,6 +6,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -17,31 +20,42 @@ import org.json.JSONObject;
 
 public class JSONExampleActivity extends Activity {
     /** Called when the activity is first created. */
+    
+    String str = "par1=yeah&par2=bar";
+    TextView parm1;
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost(
-                "http://192.168.1.5/bclipse/php/index.php?par1=yeah&par2=bar");
-        TextView textView = (TextView) findViewById(R.id.textView1);
+        parm1 = (TextView) findViewById(R.id.par1);
+        final Button button = (Button) findViewById(R.id.doit);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                
+                HttpClient httpclient = new DefaultHttpClient();
+                HttpPost httppost = new HttpPost(
+                        "http://192.168.1.5/bclipse/php/index.php?" + str);
 
-        try {
-            HttpResponse response = httpclient.execute(httppost);
-            String jsonResult = inputStreamToString(
-                    response.getEntity().getContent()).toString();
-            
-            JSONObject object = new JSONObject(jsonResult);
-            String par1 = object.getString("par1");
-            String par2 = object.getString("par2");
-            textView.setText(par1 + " - " + par2);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+                try {
+                    HttpResponse response = httpclient.execute(httppost);
+                    String jsonResult = inputStreamToString(
+                            response.getEntity().getContent()).toString();
+                    
+                    JSONObject object = new JSONObject(jsonResult);
+                    String par1 = object.getString("par1");
+                    String par2 = object.getString("par2");
+                    parm1.setText(par1 + " - " + par2);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (ClientProtocolException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    
 
     }
 
