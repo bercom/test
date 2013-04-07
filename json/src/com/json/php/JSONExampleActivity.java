@@ -15,7 +15,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 public class JSONExampleActivity extends Activity {
     /** Called when the activity is first created. */
     @Override
@@ -23,49 +22,43 @@ public class JSONExampleActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost("http://192.168.1.5/bclipse/php/index.php");
-        TextView textView = (TextView)findViewById(R.id.textView1);
-		try {
-			
-			HttpResponse response = httpclient.execute(httppost);
-			String jsonResult = inputStreamToString(response.getEntity().getContent()).toString();
-			JSONObject object = new JSONObject(jsonResult);
+        HttpPost httppost = new HttpPost(
+                "http://192.168.1.5/bclipse/php/index.php?par1=yeah&par2=bar");
+        TextView textView = (TextView) findViewById(R.id.textView1);
 
-            String name = object.getString("name");
-            String comment = object.getString("comment");
-	    	String verion = object.getString("version");
-	    	textView.setText(name + " - " + comment + " - " + verion);
-	    	
-		} 
-		catch (JSONException e) {
-			e.printStackTrace();
-		} 
-		catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} 
-		catch (IOException e) {
-			e.printStackTrace();
-		}
+        try {
+            HttpResponse response = httpclient.execute(httppost);
+            String jsonResult = inputStreamToString(
+                    response.getEntity().getContent()).toString();
+            
+            JSONObject object = new JSONObject(jsonResult);
+            String par1 = object.getString("par1");
+            String par2 = object.getString("par2");
+            textView.setText(par1 + " - " + par2);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+    }
 
-       }
     private StringBuilder inputStreamToString(InputStream is) {
         String rLine = "";
         StringBuilder answer = new StringBuilder();
         BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-         
+
         try {
-         while ((rLine = rd.readLine()) != null) {
-          answer.append(rLine);
-           }
+            while ((rLine = rd.readLine()) != null) {
+                answer.append(rLine);
+            }
         }
-         
+
         catch (IOException e) {
             e.printStackTrace();
-         }
+        }
         return answer;
-       }
+    }
 }
-    	
-        
-        
