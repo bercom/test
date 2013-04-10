@@ -1,5 +1,17 @@
 package com.json.php;
 
+/*
+ * programmet tager to felter fra edit tekst 1 og to, og sender med i en url med gettektst
+ * dette kan verificeres på på apache loggen
+ * de modtagne parametre puttes på et array, og json encodes
+ * returstrengen fra get er altså en json strent
+ * denne dekodes, til par 1 og 2
+ * disse sendes tilbage til editfelterne - i ombyttet rækkefølge,
+ * Så er det let at verificere virkningen!
+ * 
+ * 
+ * */
+
 import android.app.Activity;
 import android.os.Bundle;
 import java.io.BufferedReader;
@@ -13,6 +25,7 @@ import android.widget.TextView;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
@@ -21,31 +34,37 @@ import org.json.JSONObject;
 public class JSONExampleActivity extends Activity {
     /** Called when the activity is first created. */
     
-    String str = "par1=yeah&par2=bar";
+    String parStr;
     TextView parm1;
+    TextView parm2;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         parm1 = (TextView) findViewById(R.id.par1);
+        parm2 = (TextView) findViewById(R.id.par2);
         final Button button = (Button) findViewById(R.id.doit);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 
+                parStr = parm1.getText() + "&" + parm2.getText();
+                String parStr = parm1.getText() + "&" + parm2.getText();
                 HttpClient httpclient = new DefaultHttpClient();
-                HttpPost httppost = new HttpPost(
-                        "http://192.168.1.5/bclipse/php/index.php?" + str);
+                HttpGet httpget = new HttpGet(
+                        "http://192.168.1.5/bclipse/php/index.php?" + "parStr");
 
                 try {
-                    HttpResponse response = httpclient.execute(httppost);
+                    HttpResponse response = httpclient.execute(httpget);
                     String jsonResult = inputStreamToString(
                             response.getEntity().getContent()).toString();
+//                    logcat.i
                     
                     JSONObject object = new JSONObject(jsonResult);
                     String par1 = object.getString("par1");
                     String par2 = object.getString("par2");
-                    parm1.setText(par1 + " - " + par2);
+                    parm1.setText(par1.toString());
+                    parm2.setText("buh");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 } catch (ClientProtocolException e) {
