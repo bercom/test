@@ -36,6 +36,7 @@ public class JSONExampleActivity extends Activity {
 
     TextView parm1;
     TextView parm2;
+    TextView parm3;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,13 +44,19 @@ public class JSONExampleActivity extends Activity {
         setContentView(R.layout.main);
         parm1 = (TextView) findViewById(R.id.par1);
         parm2 = (TextView) findViewById(R.id.par2);
+        parm3 = (TextView) findViewById(R.id.par3);
         final Button button = (Button) findViewById(R.id.doit);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                String parStr = String.format("http://192.168.1.5/bclipse/php/index.php?par1=%s&par2=%s",
-                        parm1.getText().toString(),
-                        parm2.getText().toString());
+                download();
+            }
+
+            private void download() {
+                String parStr = String
+                        .format("http://192.168.1.5/bclipse/php/index.php?par1=%s&par2=%s",
+                                parm1.getText().toString(), parm2.getText()
+                                        .toString());
                 HttpClient httpclient = new DefaultHttpClient();
                 HttpGet httpget = new HttpGet(parStr);
 
@@ -64,6 +71,9 @@ public class JSONExampleActivity extends Activity {
                     String par2 = object.getString("par2");
                     parm1.setText(par2.toString());
                     parm2.setText(par1.toString());
+                    int temp = Integer.valueOf(parm1.getText().toString())
+                            + Integer.valueOf(parm2.getText().toString());
+                    parm3.setText(String.valueOf(temp));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 } catch (ClientProtocolException e) {
