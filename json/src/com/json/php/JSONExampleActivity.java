@@ -33,11 +33,10 @@ import org.json.JSONObject;
 
 public class JSONExampleActivity extends Activity {
     /** Called when the activity is first created. */
-    
-    String parStr;
+
     TextView parm1;
     TextView parm2;
-    
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,24 +46,24 @@ public class JSONExampleActivity extends Activity {
         final Button button = (Button) findViewById(R.id.doit);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                
-                parStr = parm1.getText() + "&" + parm2.getText();
-                String parStr = parm1.getText() + "&" + parm2.getText();
+
+                String parStr = String.format("http://192.168.1.5/bclipse/php/index.php?par1=%s&par2=%s",
+                        parm1.getText().toString(),
+                        parm2.getText().toString());
                 HttpClient httpclient = new DefaultHttpClient();
-                HttpGet httpget = new HttpGet(
-                        "http://192.168.1.5/bclipse/php/index.php?" + "parStr");
+                HttpGet httpget = new HttpGet(parStr);
 
                 try {
                     HttpResponse response = httpclient.execute(httpget);
                     String jsonResult = inputStreamToString(
                             response.getEntity().getContent()).toString();
-//                    logcat.i
-                    
+                    // logcat.i
+
                     JSONObject object = new JSONObject(jsonResult);
                     String par1 = object.getString("par1");
                     String par2 = object.getString("par2");
-                    parm1.setText(par1.toString());
-                    parm2.setText("buh");
+                    parm1.setText(par2.toString());
+                    parm2.setText(par1.toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 } catch (ClientProtocolException e) {
@@ -74,7 +73,6 @@ public class JSONExampleActivity extends Activity {
                 }
             }
         });
-    
 
     }
 
